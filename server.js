@@ -7,6 +7,7 @@ const io = require('socket.io')(3000, {
 })
 
 io.on('connection', socket => {
-    console.log('Cliente conectado:', socket.id)
-    socket.emit('chat-mensagem', 'Ola mundo')
+    socket.on('enviar-mensagem', mensagem => {
+        socket.broadcast.emit('chat-mensagem', mensagem)
+    })
 })
