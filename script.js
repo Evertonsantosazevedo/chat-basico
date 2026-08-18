@@ -3,18 +3,25 @@ const mensagemContainer = document.getElementById('mensagem-container')
 const mensagemForm = document.getElementById('envio-container')
 const mensagemInput = document.getElementById('mensagem-input')
 
+const nome = prompt('Qual o seu nome ? ')
+appendMensagem('Você entrou no chat')
+socket.emit('novo-usuario', nome)
 
 socket.on('chat-mensagem', data => {
-    appendMensagem(data)
-})
-
-socket.on('chat-mensagem', data => {
-    console.log(data)
+    const nomeRemetente = data && data.nome ? data.nome : 'Sistema'
+    const textoMensagem = data && data.mensagem ? data.mensagem : data
+    appendMensagem(`${nomeRemetente}: ${textoMensagem}`)
 })
 
 mensagemForm.addEventListener('submit', e => {
     e.preventDefault()
-    const mensagem = mensagemInput.value
+
+    const mensagem = mensagemInput.value.trim()
+
+    if (!mensagem) {
+        return
+    }
+
     socket.emit('enviar-mensagem', mensagem)
     mensagemInput.value = ''
 })
